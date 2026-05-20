@@ -18,29 +18,29 @@ public class AuthService : IAuthService
         _jwtService = jwtService;
     }
 
-    public async Task<Result<string>> TryLoginUserAsync(LoginDTO loginDTO)
+    public async Task<Result<string>> TryLoginUserAsync(LoginRequest loginDTO)
     {
         var user = await _userRepository.GetUserByEmailAsync(loginDTO.Email.Trim());
 
         if(user is null)
-            return Result<string>.ValidationFailure("Email", "Email não registrado");
+            return Result<string>.FieldFailure("Email", "Email não registrado");
 
         if(!await _hashPasswordService.VerifyAsync(loginDTO.Password.Trim(), user.PasswordHash))
-            return Result<string>.ValidationFailure("Password", "Senha incorreta");
+            return Result<string>.FieldFailure("Password", "Senha incorreta");
 
         var token = _jwtService.Generate(user);
 
         return Result<string>.Success(token);
     }
 
-    public async Task<Result<string>> TryRegisterUserAsync(RegisterDTO registerDTO)
+    public async Task<Result<string>> TryRegisterUserAsync(RegisterRequest registerDTO)
     {
         var name = registerDTO.Name.Trim();
         var email = registerDTO.Email.Trim();
         var password = registerDTO.Password.Trim();
         
         if(await _userRepository.GetUserByEmailAsync(email) is not null)
-            return Result<string>.ValidationFailure("Email", "Email já registrado");
+            return Result<string>.FieldFailure("Email", "Email já registrado");
         
         var hashedPassword = await _hashPasswordService.HashAsync(password);
 

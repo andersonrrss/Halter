@@ -7,10 +7,13 @@ using GymApp.Infrastructure.Data;
 using GymApp.Infrastructure.Services;
 using GymApp.Application.Settings;
 using GymApp.API;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => 
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddServices();
 builder.Services.AddRepositories();

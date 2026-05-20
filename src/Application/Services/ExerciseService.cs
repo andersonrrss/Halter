@@ -13,7 +13,7 @@ public class ExerciseService : IExerciseService
         _exerciseRepository = exerciseRepository;
     }
 
-    public async Task<Result<IEnumerable<ExerciseDTO>>> GetExercisesAsync(
+    public async Task<Result<IEnumerable<ExerciseResponse>>> GetExercisesAsync(
         int page, 
         int pageSize, 
         int? muscleGroupId,
@@ -22,8 +22,8 @@ public class ExerciseService : IExerciseService
     {
         var exerciseList = await _exerciseRepository.GetAllAsync(page, pageSize, search, muscleGroupId);
 
-        return Result<IEnumerable<ExerciseDTO>>.Success(
-            exerciseList.Select(ExerciseDTO.FromEntity)
+        return Result<IEnumerable<ExerciseResponse>>.Success(
+            exerciseList.Select(ExerciseResponse.FromEntity)
         );
     }
 }

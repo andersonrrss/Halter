@@ -1,3 +1,3 @@
 namespace GymApp.Domain.Common;
 
-public class ValidationErrors : Dictionary<string, string[]> {}
+public class FieldErrors : Dictionary<string, string[]> {}

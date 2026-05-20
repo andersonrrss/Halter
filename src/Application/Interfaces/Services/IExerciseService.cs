@@ -5,5 +5,5 @@ namespace GymApp.Application.Interfaces;
 
 public interface IExerciseService
 {
-    Task<Result<IEnumerable<ExerciseDTO>>> GetExercisesAsync(int page, int pageSize, int? muscleGroupId, string? search);
+    Task<Result<IEnumerable<ExerciseResponse>>> GetExercisesAsync(int page, int pageSize, int? muscleGroupId, string? search);
 }

@@ -6,9 +6,9 @@ namespace GymApp.Application.Interfaces;
 
 public interface IRoutineService
 {
-    Task<Result<IEnumerable<RoutineResponseDTO>>> GetUserRoutinesAsync(Guid userId);
+    Task<Result<IEnumerable<RoutineResponse>>> GetUserRoutinesAsync(Guid userId);
 
-    Task<Result<RoutineResponseDTO>> GetRoutineAsync(Guid routineId, Guid requesterId);
+    Task<Result<RoutineResponse>> GetRoutineAsync(Guid routineId, Guid requesterId);
 
-    Task<Result<RoutineResponseDTO>> CreateRoutineAsync(RoutineRequestDTO routineDTO, Guid userId);
+    Task<Result<RoutineResponse>> CreateRoutineAsync(RoutineRequest routineDTO, Guid userId);
 }

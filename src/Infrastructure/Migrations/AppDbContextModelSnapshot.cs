@@ -697,34 +697,42 @@ namespace GymApp.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("GymApp.Domain.Entities.ExerciseLog", b =>
+            modelBuilder.Entity("GymApp.Domain.Entities.ExerciseEntry", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("ExerciseId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("MaxWeight")
-                        .HasColumnType("double precision");
-
-                    b.Property<int>("RepsCompleted")
+                    b.Property<int>("ExerciseType")
                         .HasColumnType("integer");
+
+                    b.Property<double?>("MaxWeight")
+                        .HasColumnType("double precision");
 
                     b.Property<int>("SetsCompleted")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("WorkoutLogId")
+                    b.Property<int>("ValueAchieved")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("WorkoutSessionId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CompletedAt");
+
                     b.HasIndex("ExerciseId");
 
-                    b.HasIndex("WorkoutLogId");
+                    b.HasIndex("WorkoutSessionId");
 
-                    b.ToTable("ExerciseLogs");
+                    b.ToTable("ExerciseEntries");
                 });
 
             modelBuilder.Entity("GymApp.Domain.Entities.MuscleGroup", b =>
@@ -917,29 +925,43 @@ namespace GymApp.Infrastructure.Migrations
                     b.ToTable("WorkoutExercises");
                 });
 
-            modelBuilder.Entity("GymApp.Domain.Entities.WorkoutLog", b =>
+            modelBuilder.Entity("GymApp.Domain.Entities.WorkoutSession", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateOnly>("ExecutedAt")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("FinishedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("PausedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("TotalPausedSeconds")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("WorkoutId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.HasIndex("WorkoutId");
 
-                    b.ToTable("WorkoutLogs");
+                    b.ToTable("WorkoutSessions");
                 });
 
             modelBuilder.Entity("GymApp.Domain.Entities.Exercise", b =>
                 {
                     b.HasOne("GymApp.Domain.Entities.MuscleGroup", "MuscleGroup")
-                        .WithMany("Exercises")
+                        .WithMany()
                         .HasForeignKey("MuscleGroupId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
@@ -947,7 +969,7 @@ namespace GymApp.Infrastructure.Migrations
                     b.Navigation("MuscleGroup");
                 });
 
-            modelBuilder.Entity("GymApp.Domain.Entities.ExerciseLog", b =>
+            modelBuilder.Entity("GymApp.Domain.Entities.ExerciseEntry", b =>
                 {
                     b.HasOne("GymApp.Domain.Entities.Exercise", "Exercise")
                         .WithMany()
@@ -955,15 +977,15 @@ namespace GymApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GymApp.Domain.Entities.WorkoutLog", "WorkoutLog")
-                        .WithMany("ExercisesLogs")
-                        .HasForeignKey("WorkoutLogId")
+                    b.HasOne("GymApp.Domain.Entities.WorkoutSession", "WorkoutSession")
+                        .WithMany("ExerciseEntries")
+                        .HasForeignKey("WorkoutSessionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Exercise");
 
-                    b.Navigation("WorkoutLog");
+                    b.Navigation("WorkoutSession");
                 });
 
             modelBuilder.Entity("GymApp.Domain.Entities.Routine", b =>
@@ -1007,19 +1029,22 @@ namespace GymApp.Infrastructure.Migrations
                     b.Navigation("Workout");
                 });
 
-            modelBuilder.Entity("GymApp.Domain.Entities.WorkoutLog", b =>
+            modelBuilder.Entity("GymApp.Domain.Entities.WorkoutSession", b =>
                 {
+                    b.HasOne("GymApp.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GymApp.Domain.Entities.Workout", "Workout")
                         .WithMany()
                         .HasForeignKey("WorkoutId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.Navigation("Workout");
-                });
+                    b.Navigation("User");
 
-            modelBuilder.Entity("GymApp.Domain.Entities.MuscleGroup", b =>
-                {
-                    b.Navigation("Exercises");
+                    b.Navigation("Workout");
                 });
 
             modelBuilder.Entity("GymApp.Domain.Entities.Routine", b =>
@@ -1037,9 +1062,9 @@ namespace GymApp.Infrastructure.Migrations
                     b.Navigation("Exercises");
                 });
 
-            modelBuilder.Entity("GymApp.Domain.Entities.WorkoutLog", b =>
+            modelBuilder.Entity("GymApp.Domain.Entities.WorkoutSession", b =>
                 {
-                    b.Navigation("ExercisesLogs");
+                    b.Navigation("ExerciseEntries");
                 });
 #pragma warning restore 612, 618
         }

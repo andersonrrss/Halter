@@ -5,5 +5,5 @@ namespace GymApp.Application.Interfaces;
 
 public interface IUserService
 {    
-    Task<Result<UserDTO>> GetUserInformationAsync(Guid userId);
+    Task<Result<UserResponse>> GetUserInformationAsync(Guid userId);
 }

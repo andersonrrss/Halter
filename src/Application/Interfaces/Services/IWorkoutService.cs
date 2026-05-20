@@ -5,7 +5,7 @@ namespace GymApp.Application.Interfaces;
 
 public interface IWorkoutService
 {
-    Task<Result<WorkoutWithExercisesDTO>> GetWorkoutAsync(Guid workoutId, Guid requesterId);
+    Task<Result<WorkoutWithExercisesResponse>> GetWorkoutAsync(Guid workoutId, Guid requesterId);
 
-    Task<Result<WorkoutResponseDTO>> CreateWorkoutAsync(WorkoutRequestDTO workoutDto, Guid requesterId);
+    Task<Result<WorkoutResponse>> CreateWorkoutAsync(WorkoutRequest workoutDto, Guid requesterId);
 }

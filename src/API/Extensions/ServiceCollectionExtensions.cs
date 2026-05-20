@@ -1,6 +1,7 @@
 ﻿using GymApp.Application;
 using GymApp.Application.Interfaces;
 using GymApp.Application.Services;
+using GymApp.Infrastructure;
 using GymApp.Infrastructure.Repositories;
 using GymApp.Infrastructure.Services;
 using Microsoft.OpenApi;
@@ -16,6 +17,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IWorkoutRepository, WorkoutRepository>();
         services.AddScoped<IExerciseRepository, ExerciseRepository>();
         services.AddScoped<IWorkoutExerciseRepository, WorkoutExerciseRepository>();
+        services.AddScoped<IWorkoutSessionRepository, WorkoutSessionRepository>();
+        services.AddScoped<IExerciseEntryRepository, ExerciseEntryRepository>();
         return services;
     }
 
@@ -28,6 +31,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IWorkoutService, WorkoutService>();
         services.AddScoped<IExerciseService, ExerciseService>();
         services.AddScoped<IWorkoutExerciseService, WorkoutExerciseService>();
+        services.AddScoped<IWorkoutSessionService, WorkoutSessionService>();
+        services.AddScoped<IExerciseEntryService, ExerciseEntryService>();
         return services;
     }
 

@@ -4,18 +4,18 @@ namespace GymApp.Domain.Common;
 
 public class Result<T>
 {
-    public bool IsSucess { get; } 
+    public bool IsSuccess { get; } 
     public T? Value { get; }
     public string? Error { get; }
-    public ValidationErrors? ValidationErrors { get; }
+    public FieldErrors? FieldErrors { get; }
     public ErrorType ErrorType { get; }
 
-    public Result(bool isSucess, T? value, string? error, ValidationErrors? validationErrors, ErrorType errorType)
+    public Result(bool isSuccess, T? value, string? error, FieldErrors? fieldErrors, ErrorType errorType)
     {
-        IsSucess = isSucess;
+        IsSuccess = isSuccess;
         Value = value;
         Error = error;
-        ValidationErrors = validationErrors;
+        FieldErrors = fieldErrors;
         ErrorType = errorType;
     }
 
@@ -25,19 +25,19 @@ public class Result<T>
     public static Result<T> Failure(string error, ErrorType errorType) => 
         new(false, default, error, null, errorType);
 
-    public static Result<T> ValidationFailure(ValidationErrors errors) => 
-        new (false, default, null, errors, ErrorType.Validation);
+    public static Result<T> FieldFailure(FieldErrors errors) => 
+        new (false, default, null, errors, ErrorType.Field);
 
-    public static Result<T> ValidationFailure(string errorField, string errorMessage) {
-        var validationError = new ValidationErrors
+    public static Result<T> FieldFailure(string errorField, string errorMessage) {
+        var validationError = new FieldErrors
         {
             [errorField] =  [errorMessage]
         };
-        return new (false, default, null, validationError, ErrorType.Validation);
+        return new (false, default, null, validationError, ErrorType.Field);
     }
 
-    public static Result<T> Unauthorized(string message = "Não autorizado") =>
-        new(false, default, message, null, ErrorType.Unauthorized);
+    public static Result<T> BusinessFailure(string message = "Erro de negócios") =>
+        new(false, default, message, null, ErrorType.Business);
 
     public static Result<T> Forbidden(string message = "Acesso negado") =>
         new(false, default, message, null, ErrorType.Forbidden);
@@ -47,7 +47,4 @@ public class Result<T>
 
     public static Result<T> InternalError(string message = "Erro interno") =>
         new(false, default, message, null, ErrorType.InternalError);
-
-    public static Result<T> Conflict(string message = "Dados conflitantes") =>
-        new(false, default, message, null, ErrorType.Conflict);
 }

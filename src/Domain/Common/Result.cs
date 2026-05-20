@@ -4,23 +4,23 @@ namespace GymApp.Domain.Common;
 
 public class Result
 {
-    public bool IsSucess { get; init; } 
+    public bool IsSuccess { get; init; } 
     public string? Error { get; init; }
     public ErrorType ErrorType { get; init; }
 
-    public Result(bool isSucess,string? error, ErrorType errorType)
+    public Result(bool isSuccess,string? error, ErrorType errorType)
     {
-        IsSucess = isSucess;
+        IsSuccess = isSuccess;
         Error = error;
         ErrorType = errorType;
     }
 
-    public static Result Sucess() => new(true, null, ErrorType.None);
+    public static Result Success() => new(true, null, ErrorType.None);
 
     public static Result Failure(string error, ErrorType errorType) => new(false, error, errorType);
 
-    public static Result Unauthorized(string message = "Não autorizado") =>
-        new(false, message, ErrorType.Unauthorized);
+    public static Result BusinessFailure(string message = "Erro de negócios") =>
+        new(false, message, ErrorType.Business);
 
     public static Result Forbidden(string message = "Acesso negado") =>
         new(false, message, ErrorType.Forbidden);
@@ -30,7 +30,4 @@ public class Result
 
     public static Result InternalError(string message = "Erro interno") =>
         new(false, message, ErrorType.InternalError);
-
-    public static Result Conflict(string message = "Dados conflitantes") =>
-        new(false, message, ErrorType.Conflict);
 }

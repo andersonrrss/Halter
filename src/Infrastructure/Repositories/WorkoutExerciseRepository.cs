@@ -15,7 +15,9 @@ public class WorkoutExerciseRepository : IWorkoutExerciseRepository
     }
 
     public async Task<WorkoutExercise?> GetByIdAsync(Guid workoutExerciseId) =>
-        await _context.WorkoutExercises.FirstOrDefaultAsync(we => we.Id == workoutExerciseId);
+        await _context.WorkoutExercises
+            .Include(we => we.Exercise)
+            .FirstOrDefaultAsync(we => we.Id == workoutExerciseId);
     
     public async Task<IEnumerable<WorkoutExercise>> GetWorkoutExercisesAsync(Guid workoutId) =>
         await _context.WorkoutExercises

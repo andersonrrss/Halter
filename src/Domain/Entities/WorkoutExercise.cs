@@ -44,24 +44,33 @@ public class WorkoutExercise
         int sets,
         IList<int> values,
         ExerciseType exerciseType = ExerciseType.Fixed,
+        TimeConstraint timeConstraint = TimeConstraint.Optional,
         int? isometricHoldSeconds = null
     )
     {
+        if(
+            timeConstraint == TimeConstraint.Required && exerciseType != ExerciseType.Time ||
+            timeConstraint == TimeConstraint.Forbidden && exerciseType == ExerciseType.Time
+        )
+            return Result<WorkoutExercise>.FieldFailure(
+                "ExerciseType", "Tipo de exercício não compatível com os padrões"
+            );
+
         if(values.Count > 10)
-            return Result<WorkoutExercise>.ValidationFailure(
+            return Result<WorkoutExercise>.FieldFailure(
                 "Values","Um exercício não pode conter mais que 10 valores"
             );
 
         if(sets is > 20 or < 1)
-            return Result<WorkoutExercise>.ValidationFailure(
+            return Result<WorkoutExercise>.FieldFailure(
                 "Sets", "Um exercício não pode ter um número de séries negativo ou maior que 20"
             );
 
-        if(isometricHoldSeconds is not null and > 300)
-            return Result<WorkoutExercise>.ValidationFailure(
+        if(isometricHoldSeconds is not null and > 300 or < 0)
+            return Result<WorkoutExercise>.FieldFailure(
                 "IsometricHoldSeconds","Um exercício não pode ter mais que 5 minutos de isometria"
             );
-        
+
         var result = ValidateExercise(exerciseType, values, sets);
         if(result is not null )
             return result;
@@ -76,27 +85,29 @@ public class WorkoutExercise
         return exerciseType switch
         {
             ExerciseType.UntilFail => isValidUntilFail(values) ? null 
-                : Result<WorkoutExercise>.ValidationFailure("Values", "Até a falha não aceita repetições"),
+                : Result<WorkoutExercise>.FieldFailure("Values", "Até a falha não aceita repetições"),
                 
             ExerciseType.Fixed => isValidFixed(values) ? null 
-                : Result<WorkoutExercise>.ValidationFailure("Values", "Exercício fixo aceita somente um valor"),
+                : Result<WorkoutExercise>.FieldFailure("Values", "Exercício fixo aceita somente um valor"),
                 
-            ExerciseType.BiSet => isValidBiSet(values) ? null
-                : Result<WorkoutExercise>.ValidationFailure("Values", "Bi-Set requer exatamente dois valores"),
+            ExerciseType.UpSet => isValidUpSet(values) ? null
+                : Result<WorkoutExercise>.FieldFailure("Values", "Up Set requer precisa de repetições decrescentes"),
 
             ExerciseType.DropSet => isValidDropSet(values) ? null
-                : Result<WorkoutExercise>.ValidationFailure("Values", "Drop set precisa de repetições decrescentes"),
+                : Result<WorkoutExercise>.FieldFailure("Values", "Drop set precisa de repetições crescentes"),
 
             ExerciseType.Time => isValidTime(values) ? null
-                : Result<WorkoutExercise>.ValidationFailure("Values", "Exercício de tempo aceita somente um valor em segundos com um limite de 1h"),
+                : Result<WorkoutExercise>.FieldFailure("Values", "Exercício de tempo aceita somente um valor em segundos com um limite de 1h"),
 
             ExerciseType.Range => isValidRange(values) ? null
-                : Result<WorkoutExercise>.ValidationFailure("Values", "Intervalo requer dois valores crescentes"),
+                : Result<WorkoutExercise>.FieldFailure("Values", "Intervalo requer dois valores crescentes"),
 
             ExerciseType.Pyramid => isValidPyramid(values, sets) ? null
-                : Result<WorkoutExercise>.ValidationFailure("Values", "Pirâmide inválida"),
+                : Result<WorkoutExercise>.FieldFailure("Values", "Pirâmide inválida"),
 
-            _ => Result<WorkoutExercise>.ValidationFailure("ExerciseType","Tipo de exercício inválido")
+            ExerciseType.Multiple => Result<WorkoutExercise>.FieldFailure("ExerciseType", "Ainda não implementado"),
+
+            _ => Result<WorkoutExercise>.FieldFailure("ExerciseType","Tipo de exercício inválido")
         }; 
     }
 
@@ -108,12 +119,14 @@ public class WorkoutExercise
         values.Count == 1 && 
         IsValidValueRange(values);
 
-    private static bool isValidBiSet(IList<int> values) => 
-        values.Count == 2 && 
+    private static bool isValidUpSet(IList<int> values) => 
+        values.Count >= 2 &&
+        values.Zip(values.Skip(1)).All(p => p.First > p.Second) && 
         IsValidValueRange(values);
 
     private static bool isValidDropSet(IList<int> values) => 
-        values.Zip(values.Skip(1)).All(p => p.First > p.Second) && 
+        values.Count >= 2 &&
+        values.Zip(values.Skip(1)).All(p => p.First < p.Second) && 
         IsValidValueRange(values);
 
     private static bool isValidTime(IList<int> values) => 

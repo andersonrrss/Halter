@@ -6,7 +6,7 @@ public interface IWorkoutRepository
 {
     Task AddAsync(Workout workout);
 
-    Task<Workout?> GetWorkoutByIdAsync(Guid workoutId, bool includeRoutine = true);
+    Task<Workout?> GetByIdAsync(Guid workoutId, bool includeRoutine = true);
 
     Task<IEnumerable<Workout>> GetRoutineWorkouts(Guid routineId);
 

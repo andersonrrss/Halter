@@ -2,7 +2,6 @@
 using GymApp.Application.Interfaces;
 using GymApp.Domain.Common;
 using GymApp.Domain.Entities;
-using GymApp.Domain.Enums;
 
 namespace GymApp.Application.Services;
 
@@ -23,32 +22,38 @@ public class WorkoutExerciseService : IWorkoutExerciseService
         _workoutRepository = workoutRepository;
     }
 
-    public async Task<Result<WorkoutExerciseResponseDTO>> CreateWorkoutExerciseAsync(Guid workoutId, WorkoutExerciseRequestDTO requestDTO, Guid userId)
+    public async Task<Result<WorkoutExerciseResponse>> CreateWorkoutExerciseAsync(Guid workoutId, WorkoutExerciseRequest requestDTO, Guid userId)
     {
-        var workout = await _workoutRepository.GetWorkoutByIdAsync(workoutId, true);
+        var workout = await _workoutRepository.GetByIdAsync(workoutId, true);
         if(workout is null) 
-            return Result<WorkoutExerciseResponseDTO>.NotFound("O Treino especificado não existe"); 
+            return Result<WorkoutExerciseResponse>.NotFound("O Treino especificado não existe"); 
         if(workout.Routine.UserId != userId) 
-            return Result<WorkoutExerciseResponseDTO>.Forbidden(); 
+            return Result<WorkoutExerciseResponse>.Forbidden(); 
+        
+        if(workout.Exercises.Count >= 50)
+            return Result<WorkoutExerciseResponse>.BusinessFailure("O treino não pode conter mais que 50 exercícios");
 
         var isInWorkout = await _workoutExerciseRepository.IsInWorkout(workoutId, requestDTO.ExerciseId);
         if(isInWorkout)
-            return Result<WorkoutExerciseResponseDTO>.Conflict("Exercício já está no treino");
+            return Result<WorkoutExerciseResponse>.BusinessFailure("Exercício já está no treino");
 
         var exercise = await _exerciseRepository.GetByIdAsync(requestDTO.ExerciseId); 
         if(exercise is null) 
-            return Result<WorkoutExerciseResponseDTO>.NotFound("Exercício não existe");
+            return Result<WorkoutExerciseResponse>.NotFound("Exercício não existe");
 
         var result = WorkoutExercise.Create(
-            requestDTO.ExerciseId, workoutId, requestDTO.Sets, requestDTO.Values, requestDTO.ExerciseType, requestDTO.IsometricHoldSeconds
+            requestDTO.ExerciseId, workoutId, 
+            requestDTO.Sets, requestDTO.Values, 
+            requestDTO.ExerciseType, exercise.TimeConstraint, 
+            requestDTO.IsometricHoldSeconds
         );
 
-        if(!result.IsSucess)
-            return Result<WorkoutExerciseResponseDTO>.ValidationFailure(result.ValidationErrors!);
+        if(!result.IsSuccess)
+            return Result<WorkoutExerciseResponse>.FieldFailure(result.FieldErrors!);
 
         await _workoutExerciseRepository.AddAsync(result.Value!);
-        return Result<WorkoutExerciseResponseDTO>.Success(
-            WorkoutExerciseResponseDTO.FromEntity(result.Value!, exercise.Name
+        return Result<WorkoutExerciseResponse>.Success(
+            WorkoutExerciseResponse.FromEntity(result.Value!, exercise.Name
         ));
     }
 }

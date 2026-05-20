@@ -20,12 +20,13 @@ public class WorkoutRepository : IWorkoutRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Workout?> GetWorkoutByIdAsync(Guid workoutId, bool includeRoutine = true)
+    public async Task<Workout?> GetByIdAsync(Guid workoutId, bool includeExercises = false)
     {
         var query = _context.Workouts.AsQueryable();
 
-        if(includeRoutine)
-            query = query.Include(w => w.Routine);
+        if(includeExercises)
+            query = query.Include(w => w.Exercises);
+        query = query.Include(w => w.Routine);
         
         return await query.FirstOrDefaultAsync(w => w.Id == workoutId);
     }

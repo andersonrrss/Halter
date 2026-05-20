@@ -13,13 +13,13 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<Result<UserDTO>> GetUserInformationAsync(Guid userId)
+    public async Task<Result<UserResponse>> GetUserInformationAsync(Guid userId)
     {
         var user = await _userRepository.GetUserByIdAsync(userId);
 
         if(user is null)
-            return Result<UserDTO>.NotFound("Usuário não encontrado");
+            return Result<UserResponse>.NotFound("Usuário não encontrado");
 
-        return Result<UserDTO>.Success(UserDTO.FromEntity(user));
+        return Result<UserResponse>.Success(UserResponse.FromEntity(user));
     }
 }

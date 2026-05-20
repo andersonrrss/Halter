@@ -14,34 +14,34 @@ public class RoutineService : IRoutineService
         _routineRepository = routineRepository;
     }
 
-    public async Task<Result<IEnumerable<RoutineResponseDTO>>> GetUserRoutinesAsync(Guid userId)
+    public async Task<Result<IEnumerable<RoutineResponse>>> GetUserRoutinesAsync(Guid userId)
     {
         var routines = await _routineRepository.GetUserRoutinesAsync(userId);
             
-        return Result<IEnumerable<RoutineResponseDTO>>
-            .Success(routines.Select(RoutineResponseDTO.FromEntity));
+        return Result<IEnumerable<RoutineResponse>>
+            .Success(routines.Select(RoutineResponse.FromEntity));
     }
 
-    public async Task<Result<RoutineResponseDTO>> GetRoutineAsync(Guid routineId, Guid requesterId)
+    public async Task<Result<RoutineResponse>> GetRoutineAsync(Guid routineId, Guid requesterId)
     {
         var routine = await _routineRepository.GetRoutineByIdAsync(routineId);
 
         if(routine is null)
-            return Result<RoutineResponseDTO>.NotFound("Ficha de treino não encontrada");
+            return Result<RoutineResponse>.NotFound("Ficha de treino não encontrada");
 
         if(routine.UserId != requesterId)
-            return Result<RoutineResponseDTO>.Forbidden("Você não pode acessar essa ficha de treino");
+            return Result<RoutineResponse>.Forbidden("Você não pode acessar essa ficha de treino");
 
-        return Result<RoutineResponseDTO>
-            .Success(RoutineResponseDTO.FromEntity(routine));
+        return Result<RoutineResponse>
+            .Success(RoutineResponse.FromEntity(routine));
     }
 
-    public async Task<Result<RoutineResponseDTO>> CreateRoutineAsync(RoutineRequestDTO routineDTO, Guid userId)
+    public async Task<Result<RoutineResponse>> CreateRoutineAsync(RoutineRequest routineDTO, Guid userId)
     {
         var routine = new Routine(routineDTO.Name, userId);
 
         await _routineRepository.AddAsync(routine);
-        return Result<RoutineResponseDTO>
-            .Success(RoutineResponseDTO.FromEntity(routine));
+        return Result<RoutineResponse>
+            .Success(RoutineResponse.FromEntity(routine));
     }
 }
