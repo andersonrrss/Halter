@@ -1,7 +1,6 @@
 # Halter
 Uma api de organização de fichas de academia
 
-
 ## Registros de performance
 
 ### Exercise Entry
