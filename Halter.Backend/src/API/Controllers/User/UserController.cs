@@ -1,10 +1,10 @@
-using GymApp.API.Extensions;
-using GymApp.Application.Interfaces;
-using GymApp.Application.DTOs;
+using Halter.API.Extensions;
+using Halter.Application.Interfaces;
+using Halter.Application.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GymApp.API.Controllers
+namespace Halter.API.Controllers
 {
     [Route("api/user")]
     [ApiController]

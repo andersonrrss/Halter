@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace GymApp.Application.Settings;
+namespace Halter.Application.Settings;
 
 public static class JwtSettingsValidation
 {

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GymApp.Domain.Common;
-using GymApp.Application.DTOs;
+using Halter.Domain.Common;
+using Halter.Application.DTOs;
 
-namespace GymApp.Application.Interfaces;
+namespace Halter.Application.Interfaces;
 
 public interface IRoutineService
 {

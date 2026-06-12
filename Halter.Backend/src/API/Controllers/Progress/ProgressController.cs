@@ -1,8 +1,8 @@
-using GymApp.API.Controllers;
-using GymApp.API.Extensions;
-using GymApp.Application;
-using GymApp.Application.DTOs;
-using GymApp.Application.Interfaces;
+using Halter.API.Controllers;
+using Halter.API.Extensions;
+using Halter.Application;
+using Halter.Application.DTOs;
+using Halter.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

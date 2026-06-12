@@ -1,9 +1,9 @@
-﻿using GymApp.Application.DTOs;
-using GymApp.Application.Interfaces;
-using GymApp.Domain.Common;
-using GymApp.Domain.Entities;
+﻿using Halter.Application.DTOs;
+using Halter.Application.Interfaces;
+using Halter.Domain.Common;
+using Halter.Domain.Entities;
 
-namespace GymApp.Application.Services;
+namespace Halter.Application.Services;
 
 public class WorkoutExerciseService : IWorkoutExerciseService
 {
@@ -26,20 +26,21 @@ public class WorkoutExerciseService : IWorkoutExerciseService
     {
         var workout = await _workoutRepository.GetByIdAsync(workoutId, true);
         if(workout is null) 
-            return Result<WorkoutExerciseResponse>.NotFound("O Treino especificado não existe"); 
+            return Result<WorkoutExerciseResponse>.NotFound(); 
         if(workout.Routine.UserId != userId) 
             return Result<WorkoutExerciseResponse>.Forbidden(); 
         
         if(workout.Exercises.Count >= 50)
-            return Result<WorkoutExerciseResponse>.BusinessFailure("O treino não pode conter mais que 50 exercícios");
+            return Result<WorkoutExerciseResponse>.OutOfRange("Exercises");
 
-        var isInWorkout = await _workoutExerciseRepository.IsInWorkout(workoutId, requestDTO.ExerciseId);
-        if(isInWorkout)
-            return Result<WorkoutExerciseResponse>.BusinessFailure("Exercício já está no treino");
 
         var exercise = await _exerciseRepository.GetByIdAsync(requestDTO.ExerciseId); 
         if(exercise is null) 
-            return Result<WorkoutExerciseResponse>.NotFound("Exercício não existe");
+            return Result<WorkoutExerciseResponse>.NotFound();
+            
+        var isInWorkout = await _workoutExerciseRepository.IsInWorkout(workoutId, requestDTO.ExerciseId);
+        if(isInWorkout)
+            return Result<WorkoutExerciseResponse>.AlreadyExists();
 
         var result = WorkoutExercise.Create(
             requestDTO.ExerciseId, workoutId, 

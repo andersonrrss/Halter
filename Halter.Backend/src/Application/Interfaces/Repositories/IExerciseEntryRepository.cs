@@ -1,6 +1,6 @@
-﻿using GymApp.Domain.Entities;
+﻿using Halter.Domain.Entities;
 
-namespace GymApp.Application.Interfaces;
+namespace Halter.Application.Interfaces;
 
 public interface IExerciseEntryRepository
 {

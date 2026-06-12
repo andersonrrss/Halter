@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Halter.Domain.Common;
 
-namespace GymApp.Application.DTOs;
+namespace Halter.Application.DTOs;
 
 public record class LoginRequest
 {
-    [Required(ErrorMessage ="Email é obrigatório")]
+    [Required(ErrorMessage = ErrorCodes.Required)]
     public string Email { get; init; } = null!;
 
-    [Required(ErrorMessage = "Senha é obrigatória")]
+    [Required(ErrorMessage = ErrorCodes.Required)]
     public string Password { get; init; } = null!;
 }

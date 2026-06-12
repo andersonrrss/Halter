@@ -1,6 +1,6 @@
-﻿using GymApp.Domain.Enums;
+﻿using Halter.Domain.Enums;
 
-namespace GymApp.Application.DTOs;
+namespace Halter.Application.DTOs;
 
 public record class WorkoutExerciseRequest
 {

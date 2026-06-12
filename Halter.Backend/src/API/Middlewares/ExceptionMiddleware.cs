@@ -1,4 +1,4 @@
-﻿namespace GymApp.API;
+﻿namespace Halter.API;
 
 public class ExceptionMiddleware
 {

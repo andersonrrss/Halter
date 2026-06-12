@@ -1,20 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Halter.Domain.Common;
 
-namespace GymApp.Application.DTOs;
+namespace Halter.Application.DTOs;
 
 public record class RegisterRequest
 {
-    [Required(ErrorMessage = "Nome é obrigatório", AllowEmptyStrings = false)]
-    [MinLength(3, ErrorMessage = "Nome deve conter pelo menos três caracteres")]
-    [MaxLength(50, ErrorMessage = "Nome deve conter no máximo 50 caracteres")]
+    [Required(ErrorMessage = ErrorCodes.Required, AllowEmptyStrings = false)]
+    [MinLength(3, ErrorMessage = ErrorCodes.TooShort)]
+    [MaxLength(50, ErrorMessage = ErrorCodes.TooLong)]
     public string Name { get; init; } = null!;
 
-    [Required(ErrorMessage = "Email é obrigatório")]
-    [EmailAddress(ErrorMessage = "Email inválido")]
+    [Required(ErrorMessage = ErrorCodes.Required)]
+    [EmailAddress(ErrorMessage = ErrorCodes.Invalid)]
     public string Email { get; init; } = null!;
 
-    [Required(ErrorMessage = "Senha é obrigatória")]
-    [MinLength(6, ErrorMessage = "A senha deve conter pelo menos 6 caracteres")]
-    [RegularExpression(@"^\S+$", ErrorMessage = "A senha não pode conter espaços em branco")]
+    [Required(ErrorMessage = ErrorCodes.Required)]
+    [MinLength(6, ErrorMessage = ErrorCodes.TooShort)]
+    [RegularExpression(@"^\S+$", ErrorMessage = ErrorCodes.Invalid)]
     public string Password { get; init; } = null!;
 }                               

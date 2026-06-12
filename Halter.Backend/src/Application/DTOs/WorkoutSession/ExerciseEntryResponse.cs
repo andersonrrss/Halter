@@ -1,7 +1,7 @@
-﻿using GymApp.Domain.Entities;
-using GymApp.Domain.Enums;
+﻿using Halter.Domain.Entities;
+using Halter.Domain.Enums;
 
-namespace GymApp.Application.DTOs;
+namespace Halter.Application.DTOs;
 
 public record class ExerciseEntryResponse
 {

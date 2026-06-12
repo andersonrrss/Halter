@@ -1,8 +1,8 @@
-﻿using GymApp.Application.Interfaces;
-using GymApp.Domain.Common;
-using GymApp.Application.DTOs;
+﻿using Halter.Application.Interfaces;
+using Halter.Domain.Common;
+using Halter.Application.DTOs;
 
-namespace GymApp.Application.Services;
+namespace Halter.Application.Services;
 
 public class UserService : IUserService
 {
@@ -18,7 +18,7 @@ public class UserService : IUserService
         var user = await _userRepository.GetUserByIdAsync(userId);
 
         if(user is null)
-            return Result<UserResponse>.NotFound("Usuário não encontrado");
+            return Result<UserResponse>.NotFound();
 
         return Result<UserResponse>.Success(UserResponse.FromEntity(user));
     }

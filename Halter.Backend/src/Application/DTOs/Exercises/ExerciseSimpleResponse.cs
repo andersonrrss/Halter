@@ -1,6 +1,6 @@
-﻿using GymApp.Domain.Entities;
+﻿using Halter.Domain.Entities;
 
-namespace GymApp.Application;
+namespace Halter.Application;
 
 public record class ExerciseSimpleResponse
 {

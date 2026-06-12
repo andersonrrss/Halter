@@ -1,7 +1,7 @@
-﻿using GymApp.Application.DTOs;
-using GymApp.Domain.Entities;
+﻿using Halter.Application.DTOs;
+using Halter.Domain.Entities;
 
-namespace GymApp.Application.DTOs;
+namespace Halter.Application.DTOs;
 
 public record class RoutineResponse
 {

@@ -1,3 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+@theme{
+    --color-primary-100: #FFE8DE;
+    --color-primary-500: #FF6B35;
+    --color-primary-600: #E55A25;
+    --color-primary-900: #8A2500;
+}
+.main{
+    @apply w-full h-full bg-gray-200;
+}

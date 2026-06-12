@@ -1,8 +1,8 @@
-﻿using GymApp.Application.DTOs;
-using GymApp.Application.Interfaces;
-using GymApp.Domain.Common;
+﻿using Halter.Application.DTOs;
+using Halter.Application.Interfaces;
+using Halter.Domain.Common;
 
-namespace GymApp.Application.Services;
+namespace Halter.Application.Services;
 
 public class ExerciseService : IExerciseService
 {

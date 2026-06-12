@@ -1,33 +1,62 @@
-﻿using GymApp.Domain.Enums;
-
-namespace GymApp.Domain.Common;
+﻿namespace Halter.Domain.Common;
 
 public class Result
 {
     public bool IsSuccess { get; init; } 
-    public string? Error { get; init; }
-    public ErrorType ErrorType { get; init; }
+    public string? ErrorCode { get; init; }
+    public FieldErrors? FieldErrors { get; init; }
 
-    public Result(bool isSuccess,string? error, ErrorType errorType)
+    public Result(bool isSuccess, string? errorCode, FieldErrors? fieldErrors = null)
     {
+        if (!isSuccess)
+        {
+            if(fieldErrors is not null && fieldErrors.Any())
+            {
+                ValidateFieldErrors(fieldErrors);
+                FieldErrors = fieldErrors;
+            }
+            else
+            {
+                if(errorCode is null )
+                    throw new ArgumentNullException(nameof(errorCode), "Resultado de falha requer um código de erro");
+                if(!ErrorCodes.IsValid(errorCode))
+                    throw new ArgumentException($"Código de erro inválido: {errorCode}");
+
+                ErrorCode = errorCode;
+            }
+        }
+
         IsSuccess = isSuccess;
-        Error = error;
-        ErrorType = errorType;
     }
 
-    public static Result Success() => new(true, null, ErrorType.None);
+    private void ValidateFieldErrors(FieldErrors fieldErrors)
+    {
+        foreach(var field in fieldErrors)
+        {
+            if(!ErrorCodes.IsValid(field.Value[0]))
+                throw new ArgumentException(
+                    $"Erro inválido: '{field.Value[0]}' no campo '{field.Key}'", 
+                    nameof(fieldErrors)
+                );
+        }
+    }
 
-    public static Result Failure(string error, ErrorType errorType) => new(false, error, errorType);
+    public static Result Success() => new(true, null);
 
-    public static Result BusinessFailure(string message = "Erro de negócios") =>
-        new(false, message, ErrorType.Business);
+    public static Result Failure(string errorCode) => new(false, errorCode);
 
-    public static Result Forbidden(string message = "Acesso negado") =>
-        new(false, message, ErrorType.Forbidden);
+    public static Result Forbidden() => Failure(ErrorCodes.Forbidden);
 
-    public static Result NotFound(string message = "Não encontrado") =>
-        new(false, message, ErrorType.NotFound);
+    public static Result NotFound() => Failure(ErrorCodes.NotFound);
 
-    public static Result InternalError(string message = "Erro interno") =>
-        new(false, message, ErrorType.InternalError);
+    public static Result InternalError() => Failure(ErrorCodes.InternalError);
+
+    public static Result Invalid() => Failure(ErrorCodes.Invalid);
+    public static Result Required() => Failure(ErrorCodes.Required);
+    public static Result AlreadyExists() => Failure(ErrorCodes.AlreadyExists);
+    public static Result TooShort() => Failure(ErrorCodes.TooShort);
+    public static Result TooLong() => Failure(ErrorCodes.TooLong);
+    public static Result OutOfRange() => Failure(ErrorCodes.OutOfRange);
+    public static Result InvalidState() => Failure(ErrorCodes.InvalidState);
+    public static Result Empty() => Failure(ErrorCodes.Empty);
 }

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace GymApp.Infrastructure.Migrations
+namespace Halter.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddExerciseEntriesField : Migration

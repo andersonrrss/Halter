@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GymApp.Application.Settings;
+namespace Halter.Application.Settings;
 
 public class JwtSettings
 {

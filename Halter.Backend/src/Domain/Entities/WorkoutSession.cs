@@ -1,4 +1,4 @@
-﻿namespace GymApp.Domain.Entities;
+﻿namespace Halter.Domain.Entities;
 
 public class WorkoutSession
 {
@@ -22,7 +22,7 @@ public class WorkoutSession
     public DateTime? PausedAt { get; private set; } = null;
     public int TotalPausedSeconds { get; private set; } = 0;
 
-    public ICollection<ExerciseEntry> ExerciseEntries { get; private set; } = [];
+    public ICollection<ExerciseEntry> ExercisesEntries { get; private set; } = [];
 
     public TimeSpan TotalTime => FinishedAt is not null
         ? FinishedAt.Value - StartedAt - TimeSpan.FromSeconds(TotalPausedSeconds)

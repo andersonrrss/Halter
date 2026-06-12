@@ -1,9 +1,9 @@
-﻿using GymApp.Application.DTOs;
-using GymApp.Application.Interfaces;
-using GymApp.Domain.Common;
-using GymApp.Domain.Entities;
+﻿using Halter.Application.DTOs;
+using Halter.Application.Interfaces;
+using Halter.Domain.Common;
+using Halter.Domain.Entities;
 
-namespace GymApp.Application.Services;
+namespace Halter.Application.Services;
 
 public class AuthService : IAuthService
 {
@@ -23,10 +23,10 @@ public class AuthService : IAuthService
         var user = await _userRepository.GetUserByEmailAsync(loginDTO.Email.Trim());
 
         if(user is null)
-            return Result<string>.FieldFailure("Email", "Email não registrado");
+            return Result<string>.Invalid("Email");
 
         if(!await _hashPasswordService.VerifyAsync(loginDTO.Password.Trim(), user.PasswordHash))
-            return Result<string>.FieldFailure("Password", "Senha incorreta");
+            return Result<string>.Invalid("Password");
 
         var token = _jwtService.Generate(user);
 
@@ -40,7 +40,7 @@ public class AuthService : IAuthService
         var password = registerDTO.Password.Trim();
         
         if(await _userRepository.GetUserByEmailAsync(email) is not null)
-            return Result<string>.FieldFailure("Email", "Email já registrado");
+            return Result<string>.AlreadyExists("Email");
         
         var hashedPassword = await _hashPasswordService.HashAsync(password);
 

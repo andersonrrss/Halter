@@ -1,9 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using GymApp.Application.Interfaces;
+using Halter.Application.Interfaces;
 using Konscious.Security.Cryptography;
 
-namespace GymApp.Infrastructure.Services;
+namespace Halter.Infrastructure.Services;
 
 public class HashPasswordService : IHashPasswordService
 {

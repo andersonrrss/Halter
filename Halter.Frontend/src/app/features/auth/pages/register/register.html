@@ -1,0 +1,18 @@
+<main class="main">
+    <section class="bg-white flex justify-center items-center flex-col">
+            <h2>{{ 'auth.login.title' | translate }}</h2>
+            <form>
+                <label>
+                    <input type="email" name="email" placeholder="{{ 'auth.common.email' | translate }}">
+                </label>
+                <label>
+                    <input type="password" name="password">
+                </label>
+                <input type="button" value="Entrar">
+            </form>
+            <footer>
+                <span class="mr-2">{{ 'auth.register.hasAccount' | translate }}</span>
+                <a href="/auth/login" class="underline font-semibold text-primary">{{ 'auth.register.hasAccountLink' | translate}}</a>
+            </footer>
+    </section>
+</main>

@@ -1,6 +1,6 @@
-﻿using GymApp.Domain.Enums;
+﻿using Halter.Domain.Enums;
 
-namespace GymApp.Domain.Entities;
+namespace Halter.Domain.Entities;
 
 public class ExerciseEntry
 {

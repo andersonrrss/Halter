@@ -17,9 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\GymApp.Infrastructure.csproj" />
-    <ProjectReference Include="..\Application\GymApp.Application.csproj" />
-    <ProjectReference Include="..\Domain\GymApp.Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\Halter.Infrastructure.csproj" />
+    <ProjectReference Include="..\Application\Halter.Application.csproj" />
+    <ProjectReference Include="..\Domain\Halter.Domain.csproj" />
   </ItemGroup>
 
 </Project>

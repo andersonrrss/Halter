@@ -1,4 +1,4 @@
-﻿namespace GymApp.Application.Interfaces;
+﻿namespace Halter.Application.Interfaces;
 
 public interface IHashPasswordService
 {

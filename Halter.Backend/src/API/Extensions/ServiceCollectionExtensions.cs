@@ -1,12 +1,12 @@
-﻿using GymApp.Application;
-using GymApp.Application.Interfaces;
-using GymApp.Application.Services;
-using GymApp.Infrastructure;
-using GymApp.Infrastructure.Repositories;
-using GymApp.Infrastructure.Services;
+﻿using Halter.Application;
+using Halter.Application.Interfaces;
+using Halter.Application.Services;
+using Halter.Infrastructure;
+using Halter.Infrastructure.Repositories;
+using Halter.Infrastructure.Services;
 using Microsoft.OpenApi;
 
-namespace GymApp.API.Extensions;
+namespace Halter.API.Extensions;
 
 public static class ServiceCollectionExtensions
 {

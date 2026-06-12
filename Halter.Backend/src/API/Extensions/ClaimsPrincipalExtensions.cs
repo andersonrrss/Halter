@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace GymApp.API.Extensions;
+namespace Halter.API.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {

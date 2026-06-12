@@ -1,9 +1,9 @@
-﻿using GymApp.Application.Interfaces;
-using GymApp.Domain.Common;
-using GymApp.Domain.Entities;
-using GymApp.Application.DTOs;
+﻿using Halter.Application.Interfaces;
+using Halter.Domain.Common;
+using Halter.Domain.Entities;
+using Halter.Application.DTOs;
 
-namespace GymApp.Application.Services;
+namespace Halter.Application.Services;
 
 public class RoutineService : IRoutineService
 {
@@ -27,10 +27,10 @@ public class RoutineService : IRoutineService
         var routine = await _routineRepository.GetRoutineByIdAsync(routineId);
 
         if(routine is null)
-            return Result<RoutineResponse>.NotFound("Ficha de treino não encontrada");
+            return Result<RoutineResponse>.NotFound();
 
         if(routine.UserId != requesterId)
-            return Result<RoutineResponse>.Forbidden("Você não pode acessar essa ficha de treino");
+            return Result<RoutineResponse>.Forbidden();
 
         return Result<RoutineResponse>
             .Success(RoutineResponse.FromEntity(routine));

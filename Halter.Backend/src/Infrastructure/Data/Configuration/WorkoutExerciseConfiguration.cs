@@ -1,8 +1,8 @@
-﻿using GymApp.Domain.Entities;
+﻿using Halter.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace GymApp.Infrastructure;
+namespace Halter.Infrastructure;
 
 public class WorkoutExerciseConfiguration : IEntityTypeConfiguration<WorkoutExercise>
 {

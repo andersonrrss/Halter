@@ -1,45 +1,44 @@
-using GymApp.Domain.Enums;
-using GymApp.Domain.Common;
+using Halter.Domain.Enums;
+using Halter.Domain.Common;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GymApp.API.Controllers
+namespace Halter.API.Controllers
 {
     public class BaseController : ControllerBase
     {
         protected ActionResult<T> Respond<T>(Result<T> result, bool created = false)
         {
             if (!result.IsSuccess)
-                return MapError<T>(result.ErrorType, result.Error, result.FieldErrors);
+                return MapError<T>(result.ErrorCode!, result.FieldErrors);
 
             return created ? Created(string.Empty, result.Value) : Ok(result.Value);
         }
 
         protected ActionResult Respond(Result result) => 
-            result.IsSuccess ? Ok() : MapError(result.ErrorType, result.Error);
+            result.IsSuccess ? Ok() : MapError(result.ErrorCode!);
         
         private ActionResult<T> MapError<T>(
-            ErrorType errorType,
-            string? error,
-            Dictionary<string, string[]>? fieldErrors = null
-        ) => MapError(errorType, error, fieldErrors);
+            string errorCode,
+            FieldErrors? fieldErrors = null
+        ) => MapError(errorCode, fieldErrors);
 
         private ActionResult MapError(
-            ErrorType errorType,
-            string? error,
-            Dictionary<string, string[]>? fieldErrors = null
-        ) => errorType switch
+            string errorCode,
+            FieldErrors? fieldErrors = null
+        )
         {
-            ErrorType.NotFound => NotFound(new { message = error }),
+            if(fieldErrors is not null && fieldErrors.Any())
+                return ValidationProblem(new ValidationProblemDetails(fieldErrors));
+            
+            return errorCode switch {
+            ErrorCodes.NotFound => NotFound(),
 
-            ErrorType.InternalError => StatusCode(500, new { message = error }),
+            ErrorCodes.InternalError => StatusCode(500, new { code = errorCode }),
 
-            ErrorType.Forbidden => StatusCode(403, new { message = error } ),
+            ErrorCodes.Forbidden => StatusCode(403, new { code = errorCode }),
 
-            ErrorType.Field => fieldErrors is not null
-                ? ValidationProblem(new ValidationProblemDetails(fieldErrors))
-                : StatusCode(500, new { message = "Erro interno de validação" }),
-
-            _ => BadRequest(new { message = error })
-        };
+            _ => BadRequest(new { code = errorCode })
+            };
+        }
     }
 }

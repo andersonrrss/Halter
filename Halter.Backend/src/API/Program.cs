@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 
-using GymApp.API.Extensions;
+using Halter.API.Extensions;
 
-using GymApp.Application.Interfaces;
-using GymApp.Infrastructure.Data;
-using GymApp.Infrastructure.Services;
-using GymApp.Application.Settings;
-using GymApp.API;
+using Halter.Application.Interfaces;
+using Halter.Infrastructure.Data;
+using Halter.Infrastructure.Services;
+using Halter.Application.Settings;
+using Halter.API;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);

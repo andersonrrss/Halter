@@ -1,10 +1,10 @@
-﻿using GymApp.Application.DTOs;
-using GymApp.Application.Interfaces;
-using GymApp.Domain.Common;
-using GymApp.Domain.Entities;
-using GymApp.Domain.Enums;
+﻿using Halter.Application.DTOs;
+using Halter.Application.Interfaces;
+using Halter.Domain.Common;
+using Halter.Domain.Entities;
+using Halter.Domain.Enums;
 
-namespace GymApp.Application.Services;
+namespace Halter.Application.Services;
 
 public class ExerciseEntryService : IExerciseEntryService
 {
@@ -34,36 +34,34 @@ public class ExerciseEntryService : IExerciseEntryService
             workoutSession is null || 
             workoutSession.WorkoutId != workoutId
         )
-            return Result<ExerciseEntryResponse>.NotFound("Sessão de treino não existe");
+            return Result<ExerciseEntryResponse>.NotFound();
 
         if(workoutSession.UserId != userId)
-            return Result<ExerciseEntryResponse>.Forbidden("Você não pode acessar isso");
+            return Result<ExerciseEntryResponse>.Forbidden();
         
         if(workoutSession.PausedAt is not null)
-            return Result<ExerciseEntryResponse>.BusinessFailure("Sessão de treino pausada");
+            return Result<ExerciseEntryResponse>.InvalidState();
         if(workoutSession.FinishedAt is not null)
-            return Result<ExerciseEntryResponse>.BusinessFailure("Sessão de treino já finalizada");
+            return Result<ExerciseEntryResponse>.InvalidState();
 
         var workoutExercise = await _workoutExerciseRepository.GetByIdAsync(request.WorkoutExerciseId);
 
         if(workoutExercise is null)
-            return Result<ExerciseEntryResponse>.NotFound("Exercício inexistente");
+            return Result<ExerciseEntryResponse>.NotFound();
         
-        if(workoutSession.ExerciseEntries.Any(ee => ee.ExerciseId == workoutExercise.ExerciseId))
-            return Result<ExerciseEntryResponse>.BusinessFailure("Exercício já registrado na sessão de treino");
+        if(workoutSession.ExercisesEntries.Any(ee => ee.ExerciseId == workoutExercise.ExerciseId))
+            return Result<ExerciseEntryResponse>.AlreadyExists();
                     
         if(request.SetsCompleted <= 0)
-            return Result<ExerciseEntryResponse>.BusinessFailure("É necessário pelo menos uma série completa");
+            return Result<ExerciseEntryResponse>.OutOfRange("SetsCompleted");
 
-        var (minValue, errorMessage) = workoutExercise.ExerciseType == ExerciseType.Time 
-            ? (10, "É necessário pelo menos 10 segundos de exercício")
-            : (0, "É preciso pelo menos uma repetição");
+        var minValue = workoutExercise.ExerciseType == ExerciseType.Time ? 10 : 0;
 
         if(request.ValueAchieved <= minValue)
-            return Result<ExerciseEntryResponse>.BusinessFailure(errorMessage);
+            return Result<ExerciseEntryResponse>.OutOfRange("ValueAchieved");
         
         if(request.MaxWeight < 0)
-            return Result<ExerciseEntryResponse>.BusinessFailure("Um exercício não pode ter peso negativo");
+            return Result<ExerciseEntryResponse>.OutOfRange("MaxWeight");
 
         var exerciseEntry = new ExerciseEntry(
             workoutExercise.ExerciseId,
@@ -107,17 +105,17 @@ public class ExerciseEntryService : IExerciseEntryService
 
             if((to - from).Value.TotalDays is > 366 or < 0)
                 return Result<ExerciseProgressResponse>
-                    .BusinessFailure("O intevalo máximo permitido é de 1 ano");
+                    .OutOfRange();
         }
     
         if(to is not null && from is null)
             return Result<ExerciseProgressResponse>
-                .BusinessFailure("É necessário informar a data de início do intervalo");
+                .Required("from");
 
         var history = await _exerciseEntryRepository.GetExerciseHistory(userId, exerciseId, from, to);
 
         if(!history.Any())
-            return Result<ExerciseProgressResponse>.NotFound("Nenhum histórico encontrado para esse exercício");
+            return Result<ExerciseProgressResponse>.Empty();
 
         var personalRecord = await _exerciseEntryRepository.GetExercisePersonalRecordAsync(exerciseId, userId);
 

@@ -1,6 +1,6 @@
-﻿using GymApp.Application.Interfaces;
-using GymApp.Domain.Entities;
-using GymApp.Application.Settings;
+﻿using Halter.Application.Interfaces;
+using Halter.Domain.Entities;
+using Halter.Application.Settings;
 
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using System.Text;
 using System.Security.Claims;
 
-namespace GymApp.Infrastructure.Services;
+namespace Halter.Infrastructure.Services;
 
 public class JwtService : IJwtService
 {

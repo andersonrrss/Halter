@@ -1,9 +1,9 @@
-﻿using GymApp.Application.DTOs;
-using GymApp.Application.Interfaces;
-using GymApp.Domain.Common;
-using GymApp.Domain.Entities;
+﻿using Halter.Application.DTOs;
+using Halter.Application.Interfaces;
+using Halter.Domain.Common;
+using Halter.Domain.Entities;
 
-namespace GymApp.Application.Services;
+namespace Halter.Application.Services;
 
 public class WorkoutSessionService : IWorkoutSessionService
 {
@@ -29,11 +29,11 @@ public class WorkoutSessionService : IWorkoutSessionService
 
         if(workoutSession is null)
             return Result<FinishedWorkoutSessionResponse>
-                .NotFound("Treino não encontrado");
+                .NotFound();
         
         if(workoutSession.UserId != userId)
             return Result<FinishedWorkoutSessionResponse>
-                .Forbidden("Você não pode acessar esse treino");
+                .Forbidden();
 
         return Result<FinishedWorkoutSessionResponse>
             .Success(FinishedWorkoutSessionResponse.FromEntity(workoutSession));
@@ -54,19 +54,18 @@ public class WorkoutSessionService : IWorkoutSessionService
         var result = await AuthenticateWorkoutDataAsync(workoutId, userId);
         if(!result.IsSuccess)
             return Result<UnfinishedWorkoutSessionResponse>
-                .Failure(result.Error!, result.ErrorType);
+                .Failure(result.ErrorCode!);
 
         var exercises = await _workoutExerciseRepository.GetWorkoutExercisesAsync(workoutId);
         if(!exercises.Any())
-            return Result<UnfinishedWorkoutSessionResponse>
-                .BusinessFailure("Esse treino não contém nenhum exercício... Sessão não iniciada");
+            return Result<UnfinishedWorkoutSessionResponse>.Empty();
 
         var lastestSession = await _workoutSessionRepository.GetLatestFromUserAsync(userId);
         if(lastestSession is null )
-            return Result<UnfinishedWorkoutSessionResponse>.NotFound("Esse treino não tem sessões");
+            return Result<UnfinishedWorkoutSessionResponse>.Empty();
 
         if(lastestSession.FinishedAt is null)
-            return Result<UnfinishedWorkoutSessionResponse>.BusinessFailure("Você ainda tem um treino não finalizado");
+            return Result<UnfinishedWorkoutSessionResponse>.Failure(ErrorCodes.SessionAlreadyActive);
 
         var workoutSession = new WorkoutSession(workoutId, userId);
         await _workoutSessionRepository.AddAsync(workoutSession);
@@ -81,11 +80,11 @@ public class WorkoutSessionService : IWorkoutSessionService
         var result = await AuthenticateWorkoutDataAsync(workoutId, userId);
         if(!result.IsSuccess)
             return Result<UnfinishedWorkoutSessionResponse>
-                .Failure(result.Error!, result.ErrorType);
+                .Failure(result.ErrorCode!);
 
         var lastestSession = await _workoutSessionRepository.GetLatestFromWorkoutAsync(workoutId, true);
         if(lastestSession is null || lastestSession.FinishedAt is not null)
-            return Result<UnfinishedWorkoutSessionResponse>.NotFound("Esse treino não tem sessões em andamento");
+            return Result<UnfinishedWorkoutSessionResponse>.Failure(ErrorCodes.NoActiveSession);
 
         lastestSession.TogglePause();
         await _workoutSessionRepository.UpdateAsync(lastestSession);
@@ -99,23 +98,19 @@ public class WorkoutSessionService : IWorkoutSessionService
 
         if(!result.IsSuccess)
             return Result<FinishedWorkoutSessionResponse>
-                .Failure(result.Error!, result.ErrorType);
+                .Failure(result.ErrorCode!);
         
         var latestSession = await _workoutSessionRepository.GetLatestFromWorkoutAsync(workoutId, true);
 
-        if(latestSession is null)
-            return Result<FinishedWorkoutSessionResponse>.NotFound("Esse treino não tem nenhuma sessão iniciada");
+        if(latestSession is null || latestSession.FinishedAt is not null)
+            return Result<FinishedWorkoutSessionResponse>.Failure(ErrorCodes.NoActiveSession);
 
-        if(!latestSession.ExerciseEntries.Any())
+        if(!latestSession.ExercisesEntries.Any())
         {
             await _workoutSessionRepository.DeleteAsync(latestSession);
             return Result<FinishedWorkoutSessionResponse>
-                .BusinessFailure("Dados não salvos, nenhum exercício feito durante o treino");
+                .Empty("ExercisesEntries");
         }
-
-        if(latestSession.FinishedAt is not null)
-            return Result<FinishedWorkoutSessionResponse>
-                .BusinessFailure("A ultima sessão desse treino já foi finalizada");
 
         latestSession.FinishSession();
         await _workoutSessionRepository.UpdateAsync(latestSession);
@@ -129,7 +124,7 @@ public class WorkoutSessionService : IWorkoutSessionService
         var workout = await _workoutRepository.GetByIdAsync(workoutId);
 
         if(workout is null)
-            return Result.NotFound("Treino não encontrado");
+            return Result.NotFound();
 
         if(workout.Routine.UserId != userId)
             return Result.Forbidden();

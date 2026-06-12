@@ -1,0 +1,21 @@
+{
+    "auth": {
+        "common": {
+            "name": "Nome",
+            "email": "Email",
+            "password": "Senha"
+        },
+        "login": {
+            "title": "Bem-vindo de volta!",
+            "submit": "Entrar",
+            "noAccount": "Não tem uma conta?",
+            "noAccountLink": "Crie aqui!"
+        }, 
+        "register": {
+            "title": "Seja bem-vindo!",
+            "submit": "Registrar-se",
+            "hasAccount": "Já tem uma conta?",
+            "hasAccountLink": "Entre aqui!"
+        }
+    }
+}

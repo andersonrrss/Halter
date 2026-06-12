@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace GymApp.Infrastructure.Migrations
+namespace Halter.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddCompletedAtExerciseEntry : Migration

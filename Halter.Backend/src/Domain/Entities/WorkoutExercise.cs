@@ -1,7 +1,7 @@
-﻿using GymApp.Domain.Common;
-using GymApp.Domain.Enums;
+﻿using Halter.Domain.Common;
+using Halter.Domain.Enums;
 
-namespace GymApp.Domain.Entities;
+namespace Halter.Domain.Entities;
 
 public class WorkoutExercise
 {
@@ -52,24 +52,16 @@ public class WorkoutExercise
             timeConstraint == TimeConstraint.Required && exerciseType != ExerciseType.Time ||
             timeConstraint == TimeConstraint.Forbidden && exerciseType == ExerciseType.Time
         )
-            return Result<WorkoutExercise>.FieldFailure(
-                "ExerciseType", "Tipo de exercício não compatível com os padrões"
-            );
+            return Result<WorkoutExercise>.FieldFailure("ExerciseType", ErrorCodes.IncompatibleExerciseType);
 
         if(values.Count > 10)
-            return Result<WorkoutExercise>.FieldFailure(
-                "Values","Um exercício não pode conter mais que 10 valores"
-            );
+            return Result<WorkoutExercise>.OutOfRange("Values");
 
         if(sets is > 20 or < 1)
-            return Result<WorkoutExercise>.FieldFailure(
-                "Sets", "Um exercício não pode ter um número de séries negativo ou maior que 20"
-            );
+            return Result<WorkoutExercise>.OutOfRange("Sets");
 
         if(isometricHoldSeconds is not null and > 300 or < 0)
-            return Result<WorkoutExercise>.FieldFailure(
-                "IsometricHoldSeconds","Um exercício não pode ter mais que 5 minutos de isometria"
-            );
+            return Result<WorkoutExercise>.OutOfRange("IsometricHoldSeconds");
 
         var result = ValidateExercise(exerciseType, values, sets);
         if(result is not null )
@@ -85,29 +77,29 @@ public class WorkoutExercise
         return exerciseType switch
         {
             ExerciseType.UntilFail => isValidUntilFail(values) ? null 
-                : Result<WorkoutExercise>.FieldFailure("Values", "Até a falha não aceita repetições"),
+                : Result<WorkoutExercise>.FieldFailure("Values", ErrorCodes.InvalidValuesForExerciseType),
                 
             ExerciseType.Fixed => isValidFixed(values) ? null 
-                : Result<WorkoutExercise>.FieldFailure("Values", "Exercício fixo aceita somente um valor"),
+                : Result<WorkoutExercise>.FieldFailure("Values", ErrorCodes.InvalidValuesForExerciseType),
                 
             ExerciseType.UpSet => isValidUpSet(values) ? null
-                : Result<WorkoutExercise>.FieldFailure("Values", "Up Set requer precisa de repetições decrescentes"),
+                : Result<WorkoutExercise>.FieldFailure("Values", ErrorCodes.InvalidValuesForExerciseType),
 
             ExerciseType.DropSet => isValidDropSet(values) ? null
-                : Result<WorkoutExercise>.FieldFailure("Values", "Drop set precisa de repetições crescentes"),
+                : Result<WorkoutExercise>.FieldFailure("Values", ErrorCodes.InvalidValuesForExerciseType),
 
             ExerciseType.Time => isValidTime(values) ? null
-                : Result<WorkoutExercise>.FieldFailure("Values", "Exercício de tempo aceita somente um valor em segundos com um limite de 1h"),
+                : Result<WorkoutExercise>.FieldFailure("Values", ErrorCodes.InvalidValuesForExerciseType),
 
             ExerciseType.Range => isValidRange(values) ? null
-                : Result<WorkoutExercise>.FieldFailure("Values", "Intervalo requer dois valores crescentes"),
+                : Result<WorkoutExercise>.FieldFailure("Values", ErrorCodes.InvalidValuesForExerciseType),
 
             ExerciseType.Pyramid => isValidPyramid(values, sets) ? null
-                : Result<WorkoutExercise>.FieldFailure("Values", "Pirâmide inválida"),
+                : Result<WorkoutExercise>.FieldFailure("Values", ErrorCodes.InvalidValuesForExerciseType),
 
-            ExerciseType.Multiple => Result<WorkoutExercise>.FieldFailure("ExerciseType", "Ainda não implementado"),
+            // ExerciseType.Multiple => Result<WorkoutExercise>.FieldFailure("ExerciseType", "NO_RELEASED"),
 
-            _ => Result<WorkoutExercise>.FieldFailure("ExerciseType","Tipo de exercício inválido")
+            _ => Result<WorkoutExercise>.Invalid("ExerciseType")
         }; 
     }
 

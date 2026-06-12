@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\GymApp.Domain.csproj" />
-    <ProjectReference Include="..\Application\GymApp.Application.csproj" />
+    <ProjectReference Include="..\Domain\Halter.Domain.csproj" />
+    <ProjectReference Include="..\Application\Halter.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

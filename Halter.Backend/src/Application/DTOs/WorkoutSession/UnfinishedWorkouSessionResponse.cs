@@ -1,6 +1,6 @@
-﻿using GymApp.Domain.Entities;
+﻿using Halter.Domain.Entities;
 
-namespace GymApp.Application.DTOs;
+namespace Halter.Application.DTOs;
 
 public record class UnfinishedWorkoutSessionResponse
 {
@@ -18,7 +18,7 @@ public record class UnfinishedWorkoutSessionResponse
         StartedAt = workoutSession.StartedAt,
         PausedAt = workoutSession.PausedAt,
         TotalPausedSeconds = workoutSession.TotalPausedSeconds,
-        ExerciseEntries = workoutSession.ExerciseEntries
+        ExerciseEntries = workoutSession.ExercisesEntries
             .Select(ee => ExerciseEntryResponse.FromEntity(ee))
     };
 }

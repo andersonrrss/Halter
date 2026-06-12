@@ -1,3 +1,11 @@
-namespace GymApp.Domain.Common;
+namespace Halter.Domain.Common;
 
-public class FieldErrors : Dictionary<string, string[]> {}
+public sealed class FieldErrors : Dictionary<string, string[]>
+{
+    public FieldErrors(string field, string errorCode) : base()
+    {
+        this[field] = [errorCode];
+    }
+
+    public FieldErrors(Dictionary<string, string[]> dict) : base(dict) {}
+}

@@ -1,4 +1,4 @@
-﻿namespace GymApp.Domain.Entities;
+﻿namespace Halter.Domain.Entities;
 
 public class User
 {

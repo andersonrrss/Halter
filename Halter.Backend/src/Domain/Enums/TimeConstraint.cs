@@ -1,4 +1,4 @@
-﻿namespace GymApp.Domain.Enums;
+﻿namespace Halter.Domain.Enums;
 
 public enum TimeConstraint
 {

@@ -1,9 +1,9 @@
-﻿using GymApp.Application.DTOs;
-using GymApp.Application.Interfaces;
-using GymApp.Domain.Common;
-using GymApp.Domain.Entities;
+﻿using Halter.Application.DTOs;
+using Halter.Application.Interfaces;
+using Halter.Domain.Common;
+using Halter.Domain.Entities;
 
-namespace GymApp.Application.Services;
+namespace Halter.Application.Services;
 
 public class WorkoutService : IWorkoutService
 {
@@ -24,12 +24,12 @@ public class WorkoutService : IWorkoutService
 
         if(workout is null)
             return Result<WorkoutWithExercisesResponse>
-                .NotFound("Treino não encontrado");
+                .NotFound();
 
         var queryUserId = workout.Routine.UserId;
         if(queryUserId != requesterId)
             return Result<WorkoutWithExercisesResponse>
-                .Forbidden("Você não pode acessar treinos de outros usuários");
+                .Forbidden();
 
         var exercises = await _workoutExerciseRepository.GetWorkoutExercisesAsync(workoutId);
 
@@ -42,14 +42,14 @@ public class WorkoutService : IWorkoutService
         var routine = await _routineRepository.GetRoutineByIdAsync(requestDTO.RoutineId);
 
         if(routine is null)
-            return Result<WorkoutResponse>.NotFound("Ficha de treino inexistente");
+            return Result<WorkoutResponse>.NotFound();
 
         if(routine.UserId != requesterId)
-            return Result<WorkoutResponse>.Forbidden("Você não pode editar esta ficha");
+            return Result<WorkoutResponse>.Forbidden();
 
         var exists = await _workoutRepository.ExistsByNameAsync(requestDTO.RoutineId, requestDTO.Name);
         if(exists)
-            return Result<WorkoutResponse>.BusinessFailure("Nome de treino já existente");
+            return Result<WorkoutResponse>.AlreadyExists();
         
         var workout = new Workout(requestDTO.Name.Trim(), requestDTO.RoutineId);
         await _workoutRepository.AddAsync(workout);

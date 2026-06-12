@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GymApp.Domain.Entities;
+namespace Halter.Domain.Entities;
 
 public class MuscleGroup
 {

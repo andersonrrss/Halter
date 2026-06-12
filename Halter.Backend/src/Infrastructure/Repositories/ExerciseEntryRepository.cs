@@ -1,10 +1,10 @@
 ﻿using System.Security.Cryptography.X509Certificates;
-using GymApp.Application.Interfaces;
-using GymApp.Domain.Entities;
-using GymApp.Infrastructure.Data;
+using Halter.Application.Interfaces;
+using Halter.Domain.Entities;
+using Halter.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace GymApp.Infrastructure.Repositories;
+namespace Halter.Infrastructure.Repositories;
 
 public class ExerciseEntryRepository : IExerciseEntryRepository
 {

@@ -1,9 +1,9 @@
 ﻿using System.Text;
-using GymApp.Application.Settings;
+using Halter.Application.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace GymApp.API.Extensions;
+namespace Halter.API.Extensions;
 
 public static class JwtAuthExtension
 {

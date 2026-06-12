@@ -1,9 +1,9 @@
-﻿using GymApp.Application.Interfaces;
-using GymApp.Domain.Entities;
-using GymApp.Infrastructure.Data;
+﻿using Halter.Application.Interfaces;
+using Halter.Domain.Entities;
+using Halter.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace GymApp.Infrastructure.Repositories;
+namespace Halter.Infrastructure.Repositories;
 
 public class WorkoutSessionRepository : IWorkoutSessionRepository
 {
@@ -26,7 +26,7 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
 
         if(includeExercises)
             query = query
-                .Include(ws => ws.ExerciseEntries)
+                .Include(ws => ws.ExercisesEntries)
                 .ThenInclude(ee => ee.Exercise);
 
         return await query
@@ -55,7 +55,7 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
 
     public async Task<WorkoutSession?> GetByIdAsync(Guid workoutSessionId) => 
         await _context.WorkoutSessions
-            .Include(ws => ws.ExerciseEntries)
+            .Include(ws => ws.ExercisesEntries)
             .ThenInclude(ee => ee.Exercise)
             .FirstOrDefaultAsync(ws => ws.Id == workoutSessionId);
 

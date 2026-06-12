@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using GymApp.Domain.Entities;
+using Halter.Domain.Entities;
 using System.Reflection;
 using System.Text.Json;
 
-namespace GymApp.Infrastructure.Data;
+namespace Halter.Infrastructure.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
@@ -27,13 +27,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         var muscleGroups = LoadSeedData<MuscleGroup>(
-            "GymApp.Infrastructure.Data.SeedData.MuscleGroups.json"
+            "Halter.Infrastructure.Data.SeedData.MuscleGroups.json"
         );
         
         modelBuilder.Entity<MuscleGroup>().HasData(muscleGroups);
 
         var exercises = LoadSeedData<Exercise>(
-            "GymApp.Infrastructure.Data.SeedData.Exercises.json"
+            "Halter.Infrastructure.Data.SeedData.Exercises.json"
         );
 
         modelBuilder.Entity<Exercise>().HasData(exercises);
